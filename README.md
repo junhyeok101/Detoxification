@@ -140,12 +140,13 @@ pip install transformers peft bitsandbytes qdrant-client sentence-transformers d
 ```
 
 ### 2. Download Models
+```
 from transformers import AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer
 
 AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-14B-Instruct', load_in_4bit=True)
 SentenceTransformer('dragonkue/BGE-m3-ko')
-
+```
 
 ### 3. Download Train Models
 https://drive.google.com/drive/folders/1C9M7dy5sLvsKl2xXbPfE4KcAliJ13-I7
