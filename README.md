@@ -1,5 +1,4 @@
 # Detoxification: LLM Bias and Toxicity Mitigation
----
 
 ## Introduction
 
@@ -24,7 +23,7 @@ Language models trained on biased or toxic data tend to generate harmful content
 
 ### System Overview
 
-사진링크
+![Model_architecture](./archive/arc.png)
 
 ### 1. Data Generation Pipeline
 
@@ -80,13 +79,13 @@ Language models trained on biased or toxic data tend to generate harmful content
 
 
 ### Explicit Metrics Comparison
-![Base vs Detox - Explicit Metrics](INSERT_IMAGE_LINK_1)
+![Base vs Detox - Explicit Metrics](./Metrics/output/report_comparison.png)
 
-### Implicit Bias Comparison
-![Implicit Bias Comparison](INSERT_IMAGE_LINK_2)
+### Implicit Bias Comparison  
+![Implicit Bias Comparison](./Metrics/output/report_implicit_bias.png)
 
 ### Toxicity Escalation Rate
-![TER Comparison](INSERT_IMAGE_LINK_3)
+![TER Comparison](./Metrics/output/report_ter.png)
 
 ---
 
