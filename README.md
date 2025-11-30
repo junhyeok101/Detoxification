@@ -145,13 +145,13 @@ from sentence_transformers import SentenceTransformer
 
 AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-14B-Instruct', load_in_4bit=True)
 SentenceTransformer('dragonkue/BGE-m3-ko')
-```
 
-### 4. Download Train Models
+
+### 3. Download Train Models
 https://drive.google.com/drive/folders/1C9M7dy5sLvsKl2xXbPfE4KcAliJ13-I7
 
 
-### 5. Run Simulation
+### 4. Run Simulation
 python3 experiment/run/main.py 5 2 1 A B
 
 Arguments: `python3 experiment/run/main.py [turns] [mode] [topic] [persona1] [persona2]`
