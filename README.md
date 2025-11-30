@@ -19,30 +19,27 @@ Language models trained on biased or toxic data tend to generate harmful content
 
 ---
 
-## Architecture
-
 ### System Overview
 
 ![Model_architecture](./archive/arc.png)
+
+---
 
 ### 1. Data Generation Pipeline
 
 #### Dataset Source
 - **Platform**: DC Inside Gallery (Korean online community)
-- **Topics**: 
-  - 난민 수용 정책 (Refugee Policy)
-  - 퀴어 퍼레이드 (LGBTQ+ Pride)
-  - 병역제/모병제 (Military Service)
-  - 여성가족부 폐지 (Gender Ministry)
-  - 부동산 (Real Estate)
 
 **Total Scale**: 500 posts per topic × 5 topics = **3,500 posts & comments**
 
+---
 
 ### 2. Vector Database & RAG Construction
 
 **Embedding Model**: `dragonkue/BGE-m3-ko` (Korean-specialized, dim=1024)
 **Vector Database**: Qdrant (Fast vector search)
+
+---
 
 ### 3. Model Selection & Optimization
 
@@ -59,6 +56,8 @@ Language models trained on biased or toxic data tend to generate harmful content
 | MATH | 51.90% | 75.70% | +23.8%p |
 | HumanEval | 72.60% | 83.50% | +10.9%p |
 | IFEval | 75.0% | ~85.0% | +10%p |
+
+---
 
 ### 4. Training Strategy
 
@@ -98,6 +97,7 @@ Language models trained on biased or toxic data tend to generate harmful content
 
 ![single](./archive/single.png)
 
+---
 ## Results
 
 ![dpo-result](./archive/ww.png)
@@ -140,42 +140,18 @@ pip install transformers peft bitsandbytes qdrant-client sentence-transformers d
 ```
 
 ### 2. Download Models
-```bash
-python3 << 'EOF'
 from transformers import AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer
 
 AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-14B-Instruct', load_in_4bit=True)
 SentenceTransformer('dragonkue/BGE-m3-ko')
-EOF
 ```
 
-### 3. Start Qdrant
-```bash
-docker run -p 6333:6333 qdrant/qdrant &
-```
+### 4. Download Train Models
+https://drive.google.com/drive/folders/1C9M7dy5sLvsKl2xXbPfE4KcAliJ13-I7
 
-### 4. Configuration
-```bash
-cat > .env << 'EOF'
-BASE_MODEL_NAME=Qwen/Qwen2.5-14B-Instruct
-DETOX_MODEL_NAME=./models/detox_model
-EOF
-
-mkdir -p experiment/data/personas
-mkdir -p models/detox_model
-```
 
 ### 5. Run Simulation
-```bash
-# Mode 0: Base Model
-python3 experiment/run/main.py 5 0 1 A B
-
-# Mode 1: Detox Model (SFT + DPO)
-python3 experiment/run/main.py 5 1 1 A B
-
-# Mode 2: Comparison
 python3 experiment/run/main.py 5 2 1 A B
-```
 
 Arguments: `python3 experiment/run/main.py [turns] [mode] [topic] [persona1] [persona2]`
