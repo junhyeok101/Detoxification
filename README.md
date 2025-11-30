@@ -1,8 +1,9 @@
 # Detoxification: LLM Bias and Toxicity Mitigation
+Yaicon conference Oct 2025 - Dec 2025
 
 ## Introduction
 
-### Problem Statement
+### Problem 
 
 Language models trained on biased or toxic data tend to generate harmful content, especially in role-play scenarios. The existing approaches to toxicity detection rely on simple filtering mechanisms, which fail to capture implicit biases and contextual nuances.
 
