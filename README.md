@@ -68,24 +68,45 @@ Language models trained on biased or toxic data tend to generate harmful content
 **Method**: Single-turn SFT training
 **Goal**: Learn basic detoxification patterns
 
+- Supervised learning using pairs of offensive/sensitive utterances and desired detoxified responses
+- Primarily uses singleton (single-turn) based standardized examples
+
 #### Stage 2: Direct Preference Optimization (DPO)
 
 **Input**: Offensive Dataset + DETOX(O)-1 + DETOX(O)-2 (two detoxified versions)
 **Method**: Multi-turn RAG-ready DPO training
 **Goal**: Learn preference between detoxified outputs while maintaining coherence
+
+- Based on the SFT model, optimize multiple candidate responses according to preference data (human/model evaluation or automated preference)
+- Learn preferences in real dialogue scenarios by including context provided by multi-turn and RAG
+
 ---
+
+### 5. Dialogue Simulation
+
+**Comparison Groups**:
+- Base Model (Original Qwen2.5-14B)
+- SFT-only Model
+- SFT+DPO (2-stage) Model
+
+**Test Methodology**:
+- Set personas for each sensitive topic, input human-mimicked/crawled utterances, and simulate multi-turn dialogue
+- Save conversation records (trajectory) to evaluate long-term stability
+
+**Persona**:
+- Create realistic prompts by mimicking actual community speech patterns and styles
+
+![single](./archive/single.png)
 
 ## Results
 
+![dpo-result](./archive/ww.png)
 
-### Explicit Metrics Comparison
 ![Base vs Detox - Explicit Metrics](./Metrics/output/report_comparison.png)
 
-### Implicit Bias Comparison  
+
 ![Implicit Bias Comparison](./Metrics/output/report_implicit_bias.png)
 
-### Toxicity Escalation Rate
-![TER Comparison](./Metrics/output/report_ter.png)
 
 ---
 
@@ -107,3 +128,54 @@ Language models trained on biased or toxic data tend to generate harmful content
 
 ---
 
+
+## Quick Start
+
+### 1. Environment Setup
+```bash
+conda create -n detox python=3.10 -y
+conda activate detox
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+pip install transformers peft bitsandbytes qdrant-client sentence-transformers datasets trl
+```
+
+### 2. Download Models
+```bash
+python3 << 'EOF'
+from transformers import AutoModelForCausalLM
+from sentence_transformers import SentenceTransformer
+
+AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-14B-Instruct', load_in_4bit=True)
+SentenceTransformer('dragonkue/BGE-m3-ko')
+EOF
+```
+
+### 3. Start Qdrant
+```bash
+docker run -p 6333:6333 qdrant/qdrant &
+```
+
+### 4. Configuration
+```bash
+cat > .env << 'EOF'
+BASE_MODEL_NAME=Qwen/Qwen2.5-14B-Instruct
+DETOX_MODEL_NAME=./models/detox_model
+EOF
+
+mkdir -p experiment/data/personas
+mkdir -p models/detox_model
+```
+
+### 5. Run Simulation
+```bash
+# Mode 0: Base Model
+python3 experiment/run/main.py 5 0 1 A B
+
+# Mode 1: Detox Model (SFT + DPO)
+python3 experiment/run/main.py 5 1 1 A B
+
+# Mode 2: Comparison
+python3 experiment/run/main.py 5 2 1 A B
+```
+
+Arguments: `python3 experiment/run/main.py [turns] [mode] [topic] [persona1] [persona2]`
